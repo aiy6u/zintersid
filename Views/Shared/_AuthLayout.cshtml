@@ -1,0 +1,48 @@
+﻿<!doctype html>
+<html lang="en" data-bs-theme="light" data-layout="horizontal" data-preloader="disable" data-theme="default"
+    data-theme-colors="default">
+
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewData["Title"] - zintersid</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
+    <meta content="Themesbrand" name="author" />
+
+    <partial name="Velzon/_HeadStyles" />
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+
+<body>
+    <!-- Begin page -->
+    <div class="auth-page-wrapper pt-5">
+        <div class="auth-page-content">
+            <div class="container">
+                <div class="navbar-brand-box horizontal-logo">
+                    <partial name="Velzon/_Logo" />
+                </div>
+                @RenderBody()
+            </div>
+            <!-- container -->
+        </div>
+        <!-- auth-page-content -->
+
+        <partial name="Velzon/_Footer" />
+    </div>
+    <!-- END auth-page-wrapper -->
+
+    <!--preloader-->
+    <div id="preloader">
+        <div id="status">
+            <div class="spinner-border text-primary avatar-sm" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+
+    <partial name="Velzon/_FootScripts" />
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>
