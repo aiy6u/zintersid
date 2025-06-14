@@ -1,6 +1,8 @@
 @{
     ViewData["Title"] = "Audit Log";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var today = DateTime.UtcNow.Date;
+    var thirtyDaysAgo = today.AddDays(-30);
 }
 
 <div class="row">
@@ -19,10 +21,12 @@
                         <input type="text" class="form-control" name="user" placeholder="User" />
                     </div>
                     <div class="col-md-3">
-                        <input type="date" class="form-control" name="startDate" placeholder="Start Date" />
+                        <input type="date" class="form-control" name="startDate" placeholder="Start Date"
+                               value="@thirtyDaysAgo.ToString("yyyy-MM-dd")" />
                     </div>
                     <div class="col-md-3">
-                        <input type="date" class="form-control" name="endDate" placeholder="End Date" />
+                        <input type="date" class="form-control" name="endDate" placeholder="End Date"
+                               value="@today.ToString("yyyy-MM-dd")" />
                     </div>
                     <div class="col-md-12">
                         <button type="submit" class="btn btn-primary">Filter</button>
@@ -65,42 +69,76 @@
                 .then(result => {
                     const tbody = document.querySelector('#auditlog-table tbody');
                     tbody.innerHTML = '';
-                    result.data.forEach(entry => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td class="id">${entry.id}</td>
-                            <td class="action">${entry.action}</td>
-                            <td class="timestamp">${new Date(entry.timestamp).toLocaleString()}</td>
-                            <td class="userId">${entry.userId}</td>
-                        `;
-                        tbody.appendChild(row);
-                    });
-
-                    // Initialize List.js
-                    new List('auditlog-list', {
-                        valueNames: ['id', 'action', 'timestamp', 'userId'],
-                        listClass: 'list'
-                    });
+                    if (result.data && Array.isArray(result.data) && result.data.length > 0) {
+                        result.data.forEach((entry, idx) => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td class="id">${entry.id ?? (idx + 1)}</td>
+                                <td class="action">${entry.action ?? entry.level ?? '-'}</td>
+                                <td class="timestamp">${entry.timestamp ? new Date(entry.timestamp).toLocaleString() : '-'}</td>
+                                <td class="userId">${entry.userId ?? '-'}</td>
+                            `;
+                            tbody.appendChild(row);
+                        });
+                        // Initialize List.js only if there is at least one row
+                        new List('auditlog-list', {
+                            valueNames: ['id', 'action', 'timestamp', 'userId'],
+                            listClass: 'list'
+                        });
+                    }
                 });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
-            loadAuditLogs();
+            // Set default dates if empty
+            const startDateInput = document.querySelector('input[name="startDate"]');
+            const endDateInput = document.querySelector('input[name="endDate"]');
+            if (startDateInput && !startDateInput.value) {
+                const d = new Date();
+                d.setDate(d.getDate() - 30);
+                startDateInput.value = d.toISOString().slice(0, 10);
+            }
+            if (endDateInput && !endDateInput.value) {
+                endDateInput.value = new Date().toISOString().slice(0, 10);
+            }
 
-            document.getElementById('auditlog-filter').addEventListener('submit', function (e) {
-                e.preventDefault();
-                const formData = new FormData(this);
-                const params = {};
-                formData.forEach((value, key) => {
-                    params[key] = value;
+            loadAuditLogs({
+                startDate: startDateInput.value,
+                endDate: endDateInput.value
+            });
+
+            const filterForm = document.getElementById('auditlog-filter');
+            if (filterForm) {
+                filterForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+                    const formData = new FormData(this);
+                    const params = {};
+                    formData.forEach((value, key) => {
+                        params[key] = value;
+                    });
+                    loadAuditLogs(params);
                 });
-                loadAuditLogs(params);
-            });
+            }
 
-            document.getElementById('reset-filter').addEventListener('click', function () {
-                document.getElementById('auditlog-filter').reset();
-                loadAuditLogs();
-            });
+            const resetBtn = document.getElementById('reset-filter');
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function () {
+                    filterForm.reset();
+                    // Reset to default dates
+                    if (startDateInput) {
+                        const d = new Date();
+                        d.setDate(d.getDate() - 30);
+                        startDateInput.value = d.toISOString().slice(0, 10);
+                    }
+                    if (endDateInput) {
+                        endDateInput.value = new Date().toISOString().slice(0, 10);
+                    }
+                    loadAuditLogs({
+                        startDate: startDateInput.value,
+                        endDate: endDateInput.value
+                    });
+                });
+            }
         });
     </script>
 }
