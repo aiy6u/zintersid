@@ -1,0 +1,110 @@
+﻿@using zintersid.Common.Constants
+@using zintersid.Common.ViewModels
+
+@{
+    var menuList = new MenuViewModel
+    {
+        CurrentPage = ViewData[PageViewDataKeys.PageName]?.ToString() ?? PageViewDataKeys.PageName,
+        Sections = new List<MenuSection>
+        {
+            new MenuSection
+            {
+                Title = "Menu",
+                TitleKey = "t-menu",
+                Items = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        PageName = PageNames.Home,
+                        DisplayName = "Home",
+                        Icon = "ri-home-smile-line",
+                        IsLeaf = true,
+                        Href = "/" // Example Href value
+                    }
+                }
+            },
+            new MenuSection
+            {
+                Title = "Pages",
+                TitleKey = "t-pages",
+                Icon = "ri-more-fill",
+                Items = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        PageName = PageNames.Services,
+                        DisplayName = "Services",
+                        Icon = "ri-service-line",
+                        Children = new List<SubMenuItem>
+                        {
+                            new SubMenuItem { PageName = PageNames.WebDevelopment, DisplayName = "Web Development", Href = "/Home/WebDevelopment" },
+                            new SubMenuItem { PageName = PageNames.MobileDevelopment, DisplayName = "Mobile Development", Href = "/Home/MobileDevelopment" }
+                        }
+                    }
+                }
+            }
+        }
+    };
+}
+
+<div class="topbar-menu">
+    <ul class="list-group list-group-horizontal list-unstyled">
+        @foreach (var menuSection in menuList.Sections)
+        {
+            <li class="menu-title">
+                @if (!string.IsNullOrEmpty(menuSection.Icon))
+                {
+                    <i class="@menuSection.Icon"></i>
+                }
+                <span data-key="@menuSection.TitleKey">@menuSection.Title</span>
+            </li>
+
+            @foreach (var item in menuSection.Items)
+            {
+                if (item.IsLeaf)
+                {
+                    <li class="nav-item">
+                        <a class="nav-link menu-link @(menuList.CurrentPage == item.PageName ? "active" : "")"
+                            href="@item.Href" aria-controls="sidebar-@item.PageName">
+                            <i class="@item.Icon"></i> <span data-key="t-@item.PageName.ToLower()">@item.DisplayName</span>
+                            @if (!string.IsNullOrEmpty(item.BadgeText))
+                            {
+                                <span class="badge bg-success" data-key="t-@item.BadgeText.ToLower()">@item.BadgeText</span>
+                            }
+                        </a>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link menu-link" href="#sidebar-@item.PageName" data-bs-toggle="collapse"
+                            role="button" aria-expanded="false" aria-controls="sidebar-@item.PageName">
+                            <i class="@item.Icon"></i> <span data-key="t-@item.PageName.ToLower()">@item.DisplayName</span>
+                            @if (!string.IsNullOrEmpty(item.BadgeText))
+                            {
+                                <span class="badge bg-success" data-key="t-@item.BadgeText.ToLower()">@item.BadgeText</span>
+                            }
+                        </a>
+                        <div class="collapse menu-dropdown" id="sidebar-@item.PageName">
+                            <ul class="nav nav-sm flex-column">
+                                @foreach (var child in item.Children)
+                                {
+                                    <li class="nav-item">
+                                        <a class="nav-link @(menuList.CurrentPage == child.PageName ? "active" : "")"
+                                            href="@child.Href" data-key="t-@child.PageName.ToLower()">
+                                            @child.DisplayName
+                                            @if (!string.IsNullOrEmpty(child.BadgeText))
+                                            {
+                                                <span class="badge bg-success" data-key="t-@child.BadgeText.ToLower()">@child.BadgeText</span>
+                                            }
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </li>
+                }
+            }
+        }
+    </ul>
+</div>

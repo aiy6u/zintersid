@@ -1,4 +1,114 @@
-﻿<div class="app-menu navbar-menu">
+﻿@using zintersid.Common.Constants
+@using zintersid.Common.ViewModels
+
+@{
+    var menuList = new MenuViewModel
+    {
+        CurrentPage = ViewData[PageViewDataKeys.PageName]?.ToString() ?? PageViewDataKeys.PageName,
+        Sections = new List<MenuSection>
+        {
+            new MenuSection
+            {
+                Title = "Menu",
+                TitleKey = "t-menu",
+                Items = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        PageName = PageNames.Home,
+                        DisplayName = "Home",
+                        Icon = "ri-home-smile-line",
+                        IsLeaf = true,
+                        Href = "/" // Example Href value
+                    }
+                }
+            },
+            new MenuSection
+            {
+                Title = "Pages",
+                TitleKey = "t-pages",
+                Icon = "ri-more-fill",
+                Items = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        PageName = PageNames.About,
+                        DisplayName = "About",
+                        Icon = "ri-information-line",
+                        IsLeaf = true,
+                        Href = "/Home/About"
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.Contact,
+                        DisplayName = "Contact",
+                        Icon = "ri-contacts-line",
+                        IsLeaf = true,
+                        Href = "/Home/Contact"
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.Services,
+                        DisplayName = "Services",
+                        Icon = "ri-service-line",
+                        Children = new List<SubMenuItem>
+                        {
+                            new SubMenuItem { PageName = PageNames.WebDevelopment, DisplayName = "Web Development", Href = "/Home/WebDevelopment" },
+                            new SubMenuItem { PageName = PageNames.MobileDevelopment, DisplayName = "Mobile Development", Href = "/Home/MobileDevelopment" }
+                        }
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.Products,
+                        DisplayName = "Products",
+                        Icon = "ri-shopping-cart-line",
+                        IsLeaf = false,
+                        Children = new List<SubMenuItem>
+                        {
+                            new SubMenuItem { PageName = PageNames.Electronics, DisplayName = "Electronics", Href = "/Home/Electronics" },
+                            new SubMenuItem { PageName = PageNames.Clothing, DisplayName = "Clothing", Href = "/Home/Clothing" }
+                        }
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.Blog,
+                        DisplayName = "Blog",
+                        Icon = "ri-article-line",
+                        IsLeaf = true,
+                        BadgeText = "New",
+                        Href = "/Home/Blog"
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.FAQ,
+                        DisplayName = "FAQ",
+                        Icon = "ri-question-line",
+                        IsLeaf = true,
+                        Href = "/Home/FAQ"
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.TermsOfService,
+                        DisplayName = "Terms of Service",
+                        Icon = "ri-file-list-line",
+                        IsLeaf = true,
+                        Href = "/Home/TermsOfService"
+                    },
+                    new MenuItem
+                    {
+                        PageName = PageNames.PrivacyPolicy,
+                        DisplayName = "Privacy Policy",
+                        Icon = "ri-shield-user-line",
+                        IsLeaf = true,
+                        Href = "/Home/PrivacyPolicy"
+                    }
+                }
+            }
+        }
+    };
+}
+
+<div class="app-menu navbar-menu">
     <div class="navbar-brand-box">
         <partial name="Velzon/_Logo" />
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover" id="vertical-hover">
@@ -11,60 +121,69 @@
     </div>
 
     <div id="scrollbar">
-        <div class="container-fluid">
-            <div id="two-column-menu">
-            </div>
+        <div class="container">
+            <div id="two-column-menu"></div>
+
             <ul class="navbar-nav" id="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="/" aria-controls="sidebarLanding">
-                        <i class="ri-home-smile-line"></i> <span data-key="t-homne">Home</span>
-                    </a>
-                </li>
-                <li class="menu-title"><span data-key="t-menu">Menu</span></li>
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
-                        <i class="ri-dashboard-2-line"></i> <span data-key="t-dashboards">Dashboards</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarDashboards">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="dashboard-analytics.html" class="nav-link" data-key="t-analytics"> Analytics </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-crm.html" class="nav-link" data-key="t-crm"> CRM </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="index.html" class="nav-link" data-key="t-ecommerce"> Ecommerce </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-crypto.html" class="nav-link" data-key="t-crypto"> Crypto </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-projects.html" class="nav-link" data-key="t-projects"> Projects </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-nft.html" class="nav-link" data-key="t-nft"> NFT</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-job.html" class="nav-link" data-key="t-job">Job</a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="dashboard-blog.html" class="nav-link"><span data-key="t-blog">Blog</span> <span class="badge bg-success" data-key="t-new">New</span></a>
-                            </li>
-                        </ul>
-                    </div>
-                </li> <!-- end Dashboard Menu -->
+                @foreach (var menuSection in menuList.Sections)
+                {
+                    <li class="menu-title">
+                        @if (!string.IsNullOrEmpty(menuSection.Icon))
+                        {
+                            <i class="@menuSection.Icon"></i>
+                        }
+                        <span data-key="@menuSection.TitleKey">@menuSection.Title</span>
+                    </li>
 
-                <li class="menu-title"><i class="ri-more-fill"></i> <span data-key="t-pages">Pages</span></li>
-
-                <li class="nav-item">
-                    <a class="nav-link menu-link" href="#" aria-controls="sidebarLanding">
-                        <i class="ri-rocket-line"></i> <span data-key="t-landing">Landing</span>
-                    </a>
-                </li>
+                    @foreach (var item in menuSection.Items)
+                    {
+                        if (item.IsLeaf)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link menu-link @(menuList.CurrentPage == item.PageName ? "active" : "")"
+                                   href="@item.Href" aria-controls="sidebar-@item.PageName">
+                                    <i class="@item.Icon"></i> <span data-key="t-@item.PageName.ToLower()">@item.DisplayName</span>
+                                    @if (!string.IsNullOrEmpty(item.BadgeText))
+                                    {
+                                        <span class="badge bg-success" data-key="t-@item.BadgeText.ToLower()">@item.BadgeText</span>
+                                    }
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link menu-link" href="#sidebar-@item.PageName" data-bs-toggle="collapse"
+                                   role="button" aria-expanded="false" aria-controls="sidebar-@item.PageName">
+                                    <i class="@item.Icon"></i> <span data-key="t-@item.PageName.ToLower()">@item.DisplayName</span>
+                                    @if (!string.IsNullOrEmpty(item.BadgeText))
+                                    {
+                                        <span class="badge bg-success" data-key="t-@item.BadgeText.ToLower()">@item.BadgeText</span>
+                                    }
+                                </a>
+                                <div class="collapse menu-dropdown" id="sidebar-@item.PageName">
+                                    <ul class="nav nav-sm flex-column">
+                                        @foreach (var child in item.Children)
+                                        {
+                                            <li class="nav-item">
+                                                <a class="nav-link @(menuList.CurrentPage == child.PageName ? "active" : "")"
+                                                   href="@child.Href" data-key="t-@child.PageName.ToLower()">
+                                                    @child.DisplayName
+                                                    @if (!string.IsNullOrEmpty(child.BadgeText))
+                                                    {
+                                                        <span class="badge bg-success" data-key="t-@child.BadgeText.ToLower()">@child.BadgeText</span>
+                                                    }
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+                    }
+                }
             </ul>
         </div>
-        <!-- Sidebar -->
     </div>
 
     <div class="sidebar-background"></div>

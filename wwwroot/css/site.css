@@ -1,3 +1,21 @@
+/* https://colorhunt.co/palette/3674b5578fcaf5f0cdfada7a */
+
+:root {
+    --vz-primary: #3674B5;
+    --vz-topbar-user-bg: #578FCA;
+    --vz-topnav-item-color: #FFF;
+}
+
+[data-theme=default][data-topbar=dark] {
+    --vz-primary: #3674B5;
+    --vz-header-bg: #3674b5e6;
+    --vz-topbar-user-bg: #578FCA;
+}
+
+[data-layout=horizontal] .navbar-menu {
+    box-shadow: none;
+}
+
 .alert-danger {
     font-size: 0.875rem;
     padding: 0.75rem 1.25rem;
@@ -6,10 +24,49 @@
     border: 1px solid #f1b0b7;
     color: #721c24;
 }
-.alert-danger:empty, .alert-danger.validation-summary-valid {
+
+.alert-danger:empty,
+.alert-danger.validation-summary-valid {
     display: none;
 }
 
-.validation-summary-errors ul, .validation-summary-valid ul {
+.validation-summary-errors ul,
+.validation-summary-valid ul {
     margin-bottom: 0;
+}
+
+/* #page-topbar.topbar-shadow { */
+
+#page-topbar.topbar-shadow {
+    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); */
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: none;
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+}
+
+.app-menu.navbar-menu {
+    background: rgba(87, 143, 202, 0.20);
+    border-bottom-left-radius: 16px;
+    border-bottom-right-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+}
+
+[data-layout=horizontal] .navbar-menu .navbar-nav>li:nth-of-type(2)>.nav-link.menu-link {
+    padding-left: var(--vz-gutter-x);
+}
+
+.topbar-menu .nav-link {
+    color: var(--vz-topnav-item-color);
+    padding: .75rem 1.5rem;
+    font-size: var(--vz-vertical-menu-item-font-size);
+    font-family: var(--vz-vertical-menu-item-font-family);
+
+}
+
+.topbar-menu {
+    display: flex;
+    align-items: center;
 }
