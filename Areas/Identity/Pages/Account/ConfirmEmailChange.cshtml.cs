@@ -11,15 +11,16 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account
 {
     public class ConfirmEmailChangeModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
 
-        public ConfirmEmailChangeModel(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager)
+        public ConfirmEmailChangeModel(UserManager<AppUser> userManager, AppSignInManager signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

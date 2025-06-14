@@ -10,17 +10,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account.Manage
 {
     public class IndexModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
 
         public IndexModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager)
+            AppSignInManager signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;

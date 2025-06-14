@@ -13,18 +13,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
+            AppSignInManager signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;

@@ -5,6 +5,7 @@ using zintersid.Data;
 using Serilog;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using zintersid.Services.Emailer;
+using zintersid.Configurations;
 
 namespace zintersid;
 
@@ -28,10 +29,18 @@ public class Program
 
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            builder.Services.RegisterProjectServices(Log.Logger);
+
             // Add Identity services
-            builder.Services.AddIdentity<AppUser, AppRole>()
+            builder.Services.AddIdentity<AppUser, AppRole>(options =>
+                {
+                    // Configure Identity options if needed
+                })
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
+
+            // Replace default SignInManager with AppSignInManager
+            builder.Services.AddScoped<Services.Identity.AppSignInManager>();
 
             // Register EmailSender
             builder.Services.AddSingleton<IEmailSender, EmailSender>();

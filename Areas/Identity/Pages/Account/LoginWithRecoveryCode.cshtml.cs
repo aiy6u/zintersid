@@ -11,16 +11,18 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
+
 namespace zintersid.Areas.Identity.Pages.Account
 {
     public class LoginWithRecoveryCodeModel : PageModel
     {
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly ILogger<LoginWithRecoveryCodeModel> _logger;
 
         public LoginWithRecoveryCodeModel(
-            SignInManager<AppUser> signInManager,
+            AppSignInManager signInManager,
             UserManager<AppUser> userManager,
             ILogger<LoginWithRecoveryCodeModel> logger)
         {

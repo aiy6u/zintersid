@@ -10,18 +10,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account.Manage
 {
     public class ChangePasswordModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
         private readonly ILogger<ChangePasswordModel> _logger;
 
         public ChangePasswordModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
+            AppSignInManager signInManager,
             ILogger<ChangePasswordModel> logger)
         {
             _userManager = userManager;

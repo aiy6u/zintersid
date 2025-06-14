@@ -12,18 +12,19 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account.Manage
 {
     public class ExternalLoginsModel : PageModel
     {
         private readonly UserManager<AppUser> _userManager;
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
         private readonly IUserStore<AppUser> _userStore;
 
         public ExternalLoginsModel(
             UserManager<AppUser> userManager,
-            SignInManager<AppUser> signInManager,
+            AppSignInManager signInManager,
             IUserStore<AppUser> userStore)
         {
             _userManager = userManager;

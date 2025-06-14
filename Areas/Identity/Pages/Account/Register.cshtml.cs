@@ -19,12 +19,13 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using zintersid.Data.Entities;
+using zintersid.Services.Identity;
 
 namespace zintersid.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<AppUser> _signInManager;
+        private readonly AppSignInManager _signInManager;
         private readonly UserManager<AppUser> _userManager;
         private readonly IUserStore<AppUser> _userStore;
         private readonly IUserEmailStore<AppUser> _emailStore;
@@ -34,7 +35,7 @@ namespace zintersid.Areas.Identity.Pages.Account
         public RegisterModel(
             UserManager<AppUser> userManager,
             IUserStore<AppUser> userStore,
-            SignInManager<AppUser> signInManager,
+            AppSignInManager signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {

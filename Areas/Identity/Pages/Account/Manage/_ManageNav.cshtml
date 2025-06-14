@@ -1,6 +1,6 @@
 ﻿@using zintersid.Data
 @using zintersid.Data.Entities
-@inject SignInManager<AppUser> SignInManager
+@inject AppSignInManager SignInManager
 @{
     var hasExternalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).Any();
 }

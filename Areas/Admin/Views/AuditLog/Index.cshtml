@@ -1,0 +1,106 @@
+@{
+    ViewData["Title"] = "Audit Log";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Audit Log Entries</h4>
+            </div>
+            <div class="card-body">
+                <!-- Filter Form -->
+                <form id="auditlog-filter" class="row g-3 mb-3">
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="keyword" placeholder="Keyword" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" class="form-control" name="user" placeholder="User" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" name="startDate" placeholder="Start Date" />
+                    </div>
+                    <div class="col-md-3">
+                        <input type="date" class="form-control" name="endDate" placeholder="End Date" />
+                    </div>
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-primary">Filter</button>
+                        <button type="button" id="reset-filter" class="btn btn-secondary">Reset</button>
+                    </div>
+                </form>
+                <div id="auditlog-list">
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0" id="auditlog-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th scope="col" data-sort="id">ID</th>
+                                    <th scope="col" data-sort="action">Action</th>
+                                    <th scope="col" data-sort="timestamp">Timestamp</th>
+                                    <th scope="col" data-sort="userId">User ID</th>
+                                </tr>
+                            </thead>
+                            <tbody class="list">
+                                <!-- Data will be loaded by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+    <script>
+        function loadAuditLogs(params = {}) {
+            const url = new URL('@Url.Action("Data", "AuditLog", new { area = "Admin" })', window.location.origin);
+            Object.keys(params).forEach(key => {
+                if (params[key]) url.searchParams.append(key, params[key]);
+            });
+
+            fetch(url)
+                .then(response => response.json())
+                .then(result => {
+                    const tbody = document.querySelector('#auditlog-table tbody');
+                    tbody.innerHTML = '';
+                    result.data.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td class="id">${entry.id}</td>
+                            <td class="action">${entry.action}</td>
+                            <td class="timestamp">${new Date(entry.timestamp).toLocaleString()}</td>
+                            <td class="userId">${entry.userId}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+
+                    // Initialize List.js
+                    new List('auditlog-list', {
+                        valueNames: ['id', 'action', 'timestamp', 'userId'],
+                        listClass: 'list'
+                    });
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            loadAuditLogs();
+
+            document.getElementById('auditlog-filter').addEventListener('submit', function (e) {
+                e.preventDefault();
+                const formData = new FormData(this);
+                const params = {};
+                formData.forEach((value, key) => {
+                    params[key] = value;
+                });
+                loadAuditLogs(params);
+            });
+
+            document.getElementById('reset-filter').addEventListener('click', function () {
+                document.getElementById('auditlog-filter').reset();
+                loadAuditLogs();
+            });
+        });
+    </script>
+}
